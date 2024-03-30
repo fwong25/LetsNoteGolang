@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"time"
 	"strconv"
+	"path/filepath"
 
 	_ "github.com/lib/pq"
 )
@@ -21,6 +22,7 @@ const (
 
 var db *sql.DB
 var err error
+const templatesDirPath = "templates"
 
 // CREATE TABLE letsnote_note (
 // 	id SERIAL PRIMARY KEY NOT NULL,
@@ -45,7 +47,7 @@ type ModifyNoteInfo struct {
 
 func listNote(w http.ResponseWriter, r *http.Request) {
 	var fileName = "note_list.html"
-	t, err := template.ParseFiles(fileName)
+	t, err := template.ParseFiles(filepath.Join(templatesDirPath, fileName))
 	if err != nil {
 		fmt.Println("Error when parsing file", err)
 		return
@@ -123,7 +125,7 @@ func modifyNote(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Modify note with ID: ", note_id)
 
 	var fileName = "note_modify.html"
-	t, err := template.ParseFiles(fileName)
+	t, err := template.ParseFiles(filepath.Join(templatesDirPath, fileName))
 	if err != nil {
 		fmt.Println("Error when parsing file", err)
 		return
@@ -202,7 +204,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	case ("/modify_note_item_action"):
 		modifyNoteAction(w, r)
 	default:
-		fmt.Fprintf(w, "Visit /list_note")
+		// fmt.Fprintf(w, "Visit /list_note")
+		fmt.Println("Redirect ", r.URL.Path, " to /list_note")
+		http.Redirect(w, r, "/list_note", http.StatusSeeOther)
 	}
 }
 
@@ -225,6 +229,4 @@ func main() {
 
 	http.HandleFunc("/", handler)
 	http.ListenAndServe(":8000", nil)
-	// http.ListenAndServeTLS(":8000", "cert.pem", "key.pem", nil)
-	// go run $(go env GOROOT)/src/crypto/tls/generate_cert.go --host=localhost
 }
