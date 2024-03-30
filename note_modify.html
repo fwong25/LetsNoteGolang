@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- <link rel="stylesheet" href="{% static 'todos/styles.css' %}"> -->
+
+</head>
+<body class="bg-light">
+
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header shadow-sm bg-white">
+                        <h1 class="display-5 text-info"><i class="fas fa-check-double"></i> LetsNote</h1>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <form action="/insert_note_item" method="post" autocomplete="false">
+                                    <!-- {% csrf_token %} -->
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="title" placeholder="Title">
+                                        <div class="input-group-append text-info">
+                                            <span class="input-group-text bg-white py-0">
+                                                <button type="submit" class="btn btn-sm text-info">
+                                                    <i class="fa fa-plus-circle fa-lg"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <textarea class="form-control" name="content" placeholder="Content" rows="3"></textarea>
+                                      </div>
+                                </form>
+                            </li>
+                            {{ range $note := .Note_list }}
+                                {{ if eq $note.Id $.Note_id }}
+                                <li class="list-group-item">
+                                    <form action="/modify_note_item_action" method="post" autocomplete="false">
+                                        <!-- {% csrf_token %} -->
+                                        <input type="hidden" name="note_id" value="{{$note.Id}}">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="title" placeholder="Title" value="{{ $note.Title }}">
+                                            <div class="input-group-append text-info">
+                                                <span class="input-group-text bg-white py-0">
+                                                    <button type="submit" class="btn btn-sm text-info" name="action" value="Update">
+                                                        <i class="fa fa-check fa-lg"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                            <div class="input-group-append text-info">
+                                                <span class="input-group-text bg-white py-0">
+                                                    <button type="submit" class="btn btn-sm text-info"  name="action" value="Cancel">
+                                                        <h6 style="color:rgb(197, 5, 5) !important;"><b>X</b></h6>
+                                                        <!-- <i class="fa fa-arrow-left fa-lg"></i> -->
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="input-group">
+                                            <textarea class="form-control" name="content" placeholder="Content" rows="3">{{$note.Content}}</textarea>
+                                        </div>
+                                    </form>
+                                </li>
+                                {{ else }}
+                                <li class="list-group-item">
+                                    <small class="text-muted">{{$note.Last_modified_date}}</small>
+                                    <h5 class="mb-1">{{$note.Title}}
+                                        <form action="/modify_note_item" method="post" class="float-right d-inline">
+                                            <!-- {% csrf_token %} -->
+                                            <input type="hidden" name="note_id" value="{{$note.Id}}">
+                                            <button type="submit" class="btn">
+                                                <i class="fa fa-pencil-alt fa-lg text-danger float-right"></i>
+                                            </button>
+                                        </form>
+                                        <form action="/delete_note_item'" method="post" class="float-right d-inline">
+                                            <!-- {% csrf_token %} -->
+                                            <input type="hidden" name="note_id" value="{{$note.Id}}">
+                                            <button type="submit" class="btn">
+                                                <i class="far fa-trash-alt fa-lg text-danger float-right"></i>
+                                            </button>
+                                        </form>
+                                    </h5>
+                                    <p class="mb-1" style="white-space: pre-line">{{$note.Content}}</p>
+                                    </li>
+                                {{ end }}
+                            <!-- {% empty %}
+                            <li class="list-group-item">
+                                <span class="font-italic">No note item found.</span>
+                            </li> -->
+                            {{ end }}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script></body>
+</html>
