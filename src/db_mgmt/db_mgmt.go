@@ -67,6 +67,25 @@ func GetNoteList() []models.Note {
 	return note_list
 }
 
+func GetNote(note_id string) models.Note {
+	note := models.Note{} // Initialize a User struct to hold retrieved data
+
+	// Execute a SQL query to select "username" and "email" columns from the "users" table
+	rows, _ := db.Query("SELECT id, title, content, created_date, last_modified_date FROM letsnote_note WHERE id = $1", note_id)
+
+	if rows == nil {
+		fmt.Println("Can't retrieve note with ID: ", note_id)
+	}
+
+	rows.Next()
+	err := rows.Scan(&note.Id, &note.Title, &note.Content, &note.Created_date, &note.Last_modified_date) // Scan the current row into the "place" variable
+	if err != nil {
+		fmt.Println("Error when scanning rows", err)
+	}
+
+	return note
+}
+
 func InsertNote(title string, content string) (note_id int) {
 	currentTime := time.Now()
 	created_date := currentTime.Format("2006-01-02")

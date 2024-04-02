@@ -9,6 +9,8 @@ import (
 	"db_mgmt"
 )
 
+const templatesDirPath = "templates"
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
 	case ("/list_note"):
@@ -28,8 +30,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-const templatesDirPath = "templates"
-
 func listNote(w http.ResponseWriter, r *http.Request) {
 	var fileName = "note_list.html"
 	t, err := template.ParseFiles(filepath.Join(templatesDirPath, fileName))
@@ -40,7 +40,7 @@ func listNote(w http.ResponseWriter, r *http.Request) {
 
 	note_list := db_mgmt.GetNoteList()
 
-	err = t.ExecuteTemplate(w, "note_list.html", note_list)
+	err = t.ExecuteTemplate(w, fileName, note_list)
 	if err != nil {
 		fmt.Println("Error when executing template", err)
 		return
