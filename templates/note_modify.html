@@ -9,45 +9,78 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- <link rel="stylesheet" href="{% static 'todos/styles.css' %}"> -->
+    <!-- <link rel="stylesheet" href="static/stylesheet.css"> -->
 
+    <style>
+        .astext {
+        background:none;
+        border:none;
+        margin:0;
+        padding:0;
+        cursor: pointer;
+    }
+    </style>
 </head>
 <body class="bg-light">
-
-    <div class="container">
-        <div class="row mt-5">
-            <div class="col-md-8 offset-md-2">
-                <div class="card">
-                    <div class="card-header shadow-sm bg-white">
-                        <h1 class="display-5 text-info"><i class="fas fa-check-double"></i> LetsNote</h1>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <div class="col-auto col-md-3 col-lg-3 col-xl-3 px-sm-2 px-0 bg-dark">
+                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                    <!-- <a href="/list_note" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-blue text-decoration-none">
+                        <span class="mt-2 fs-5 d-none d-sm-inline">LetsNote Home</span>
+                    </a> -->
+                    <form action="/list_note" method="post" autocomplete="false" class="float-right">
+                        <button type="submit" class="astext mb-4 text-primary">
+                            <span style="font-size:16.0pt" class="mt-2 mb-2 fs-5 d-none d-sm-inline">LetsNote Home</span>
+                        </button>
+                    </form>
+                    <div class="input-group mb-2">
+                        <form action="/add_new_note?Parent_tbl_id=none&Parent_note_id=none" method="post" autocomplete="false">
+                            <div class="input-group-append text-info">
+                                <span class="input-group-text bg-dark py-0">
+                                    <button type="submit" class="btn btn-sm text-info">
+                                        <i class="fa fa-plus-circle fa-lg"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
                     </div>
-                    <div class="card-body">
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                <form action="/insert_note_item" method="post" autocomplete="false">
-                                    <!-- {% csrf_token %} -->
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="title" placeholder="Title">
-                                        <div class="input-group-append text-info">
-                                            <span class="input-group-text bg-white py-0">
-                                                <button type="submit" class="btn btn-sm text-info">
-                                                    <i class="fa fa-plus-circle fa-lg"></i>
-                                                </button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="input-group">
-                                        <textarea class="form-control" name="content" placeholder="Content" rows="3"></textarea>
-                                      </div>
-                                </form>
-                            </li>
-                            {{ range $note := .Note_list }}
-                                {{ if eq $note.Id $.Note_id }}
-                                <li class="list-group-item">
-                                    <form action="/modify_note_item_action" method="post" autocomplete="false">
+                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                        {{ range $note := $.Note_list }}
+                        <li class="nav-item">
+                            <form action="/view_note?tbl_id={{$note.Parent_table_id}}_{{$note.Parent_note_id}}" method="post" class="d-inline">
+                                <!-- {% csrf_token %} -->
+                                <input type="hidden" name="note_id" value="{{$note.Id}}">
+                                <nobr>
+                                    {{ range $val := Iterate $note.Note_level }}
+                                    <i>-</i>
+                                    {{end}}
+                                    <button type="submit" class="astext">
+                                        <!-- <h5>{{$note.Title}}</h5> -->
+                                        <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline text-white">{{$note.Title}}</span>
+                                    </button>
+                                </nobr>
+                            </form>
+                        </li>
+                        {{ end }}
+                    </ul>
+                </div>
+            </div>
+            <div class="col py-3">
+                <div class="container">
+                    <div class="row mt-1">
+                        <div class="col-md-10 offset-md-1">
+                            <div class="card">
+                                <div class="card-header shadow-sm bg-white">
+                                    <h1 class="display-5 text-info"><i class="fas fa-check-double"></i> LetsNote</h1>
+                                    <!-- <h1 class="display-5 text-info"  style="color: #FFCC33 !important;"><i class="fas fa-check-double"></i> LetsNote</h1> -->
+                                </div>
+                                <div class="card-body">
+                                    <form action="/modify_note_item_action?tbl_id={{$.Note_to_edit.Parent_table_id}}_{{$.Note_to_edit.Parent_note_id}}" method="post" autocomplete="false">
+                                        <input type="hidden" name="note_id" value="{{$.Note_id}}">
                                         <!-- {% csrf_token %} -->
-                                        <input type="hidden" name="note_id" value="{{$note.Id}}">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="title" placeholder="Title" value="{{ $note.Title }}">
+                                            <input type="text" class="form-control" name="title" placeholder="Title" value="{{ $.Note_to_edit.Title }}">
                                             <div class="input-group-append text-info">
                                                 <span class="input-group-text bg-white py-0">
                                                     <button type="submit" class="btn btn-sm text-info" name="action" value="Update">
@@ -59,44 +92,17 @@
                                                 <span class="input-group-text bg-white py-0">
                                                     <button type="submit" class="btn btn-sm text-info"  name="action" value="Cancel">
                                                         <h6 style="color:rgb(197, 5, 5) !important;"><b>X</b></h6>
-                                                        <!-- <i class="fa fa-arrow-left fa-lg"></i> -->
                                                     </button>
                                                 </span>
                                             </div>
                                         </div>
                                         <div class="input-group">
-                                            <textarea class="form-control" name="content" placeholder="Content" rows="3">{{$note.Content}}</textarea>
-                                        </div>
+                                            <textarea class="form-control" name="content" placeholder="Content" rows="12">{{ $.Note_to_edit.Content }}</textarea>
+                                            </div>
                                     </form>
-                                </li>
-                                {{ else }}
-                                <li class="list-group-item">
-                                    <small class="text-muted">{{$note.Last_modified_date}}</small>
-                                    <h5 class="mb-1">{{$note.Title}}
-                                        <form action="/modify_note_item" method="post" class="float-right d-inline">
-                                            <!-- {% csrf_token %} -->
-                                            <input type="hidden" name="note_id" value="{{$note.Id}}">
-                                            <button type="submit" class="btn">
-                                                <i class="fa fa-pencil-alt fa-lg text-danger float-right"></i>
-                                            </button>
-                                        </form>
-                                        <form action="/delete_note_item'" method="post" class="float-right d-inline">
-                                            <!-- {% csrf_token %} -->
-                                            <input type="hidden" name="note_id" value="{{$note.Id}}">
-                                            <button type="submit" class="btn">
-                                                <i class="far fa-trash-alt fa-lg text-danger float-right"></i>
-                                            </button>
-                                        </form>
-                                    </h5>
-                                    <p class="mb-1" style="white-space: pre-line">{{$note.Content}}</p>
-                                    </li>
-                                {{ end }}
-                            <!-- {% empty %}
-                            <li class="list-group-item">
-                                <span class="font-italic">No note item found.</span>
-                            </li> -->
-                            {{ end }}
-                        </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -110,5 +116,7 @@
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script></body>
+        crossorigin="anonymous"></script>
+
+    </body>
 </html>

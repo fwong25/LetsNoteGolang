@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 	"db_mgmt"
-	interfaces "interfaces_v2"
+	interfaces "interfaces"
 )
 func main() {
 	db_mgmt.ConnectDB()

@@ -9,7 +9,18 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- <link rel="stylesheet" href="{% static 'todos/styles.css' %}"> -->
+    <!-- <link rel="stylesheet" href="static/stylesheet.css"> -->
 
+    <style>
+        .astext {
+            background:none;
+            border:none;
+            margin:0;
+            padding:0;
+            cursor: pointer;
+        }
+
+    </style>
 </head>
 <body class="bg-light">
 
@@ -24,51 +35,48 @@
                     <div class="card-body">
                         <ul class="list-group">
                             <li class="list-group-item">
-                                <form action="/insert_note_item" method="post" autocomplete="false">
-                                    <!-- {% csrf_token %} -->
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="title" placeholder="Title">
-                                        <div class="input-group-append text-info">
-                                            <span class="input-group-text bg-white py-0">
-                                                <button type="submit" class="btn btn-sm text-info">
-                                                    <i class="fa fa-plus-circle fa-lg"></i>
-                                                </button>
-                                            </span>
-                                        </div>
+                                <form action="/add_new_note?Parent_tbl_id=none&Parent_note_id=none" method="post" autocomplete="false" class="float-left d-inline">
+                                    <div class="input-group-append text-info">
+                                        <span class="input-group-text bg-white py-0">
+                                            <button type="submit" class="btn btn-sm text-info">
+                                                <i class="fa fa-plus-circle fa-lg"></i>
+                                            </button>
+                                        </span>
                                     </div>
-                                    <div class="input-group">
-                                        <textarea class="form-control" name="content" placeholder="Content" rows="3"></textarea>
-                                      </div>
                                 </form>
                             </li>
-                            {{ range $note := . }}
                             <li class="list-group-item">
-                                <small class="text-muted">{{$note.Last_modified_date}}</small>
-                                <h5 class="mb-1">{{$note.Title}}
-                                <!-- <form action="/delete_note_item/{{$note.Id}}" method="post" class="float-right d-inline"> -->
-                                <form action="/delete_note_item" method="post" class="float-right d-inline">
-                                    <!-- {% csrf_token %} -->
-                                    <input type="hidden" name="note_id" value="{{$note.Id}}">
-                                    <button type="submit" class="btn">
-                                        <i class="far fa-trash-alt fa-lg text-danger float-right"></i>
-                                    </button>
-                                </form>
-                                <!-- <form action="/modify_note_item/{{$note.Id}}" method="post" class="float-right d-inline"> -->
-                                <form action="/modify_note_item" method="post" class="float-right d-inline">
-                                    <!-- {% csrf_token %} -->
-                                    <input type="hidden" name="note_id" value="{{$note.Id}}">
-                                    <button type="submit" class="btn">
-                                        <i class="fa fa-pencil-alt fa-lg text-danger float-right"></i>
-                                    </button>
-                                </form>
-                                </h5>
-                                <p class="mb-1" style="white-space: pre-line">{{$note.Content}}</p>
-                                </li>
-                            <!-- {% empty %}
-                            <li class="list-group-item">
-                                <span class="font-italic">No note item found.</span>
-                            </li> -->
-                            {{ end }}
+                                {{ range $note := . }}
+                                
+                                    <!-- <small class="text-muted">{{$note.Last_modified_date}}</small> -->
+                                    <h6 class="mb-1">
+                                    <form action="/view_note?tbl_id={{$note.Parent_table_id}}_{{$note.Parent_note_id}}" method="post" class="d-inline">
+                                        <!-- {% csrf_token %} -->
+                                        <input type="hidden" name="note_id" value="{{$note.Id}}">
+                                        <nobr>
+                                            {{ range $val := Iterate $note.Note_level }}
+                                                <span>&nbsp;&nbsp;</span>
+                                            {{end}}
+                                        </nobr>
+                                        <button type="submit" class="astext">
+                                            {{ if IsSubnote $note.Note_level }}
+                                                <p>&#x2022; {{$note.Title}}</p>
+                                            {{ else }}
+                                                <h5>{{$note.Title}}</h5>
+                                            {{ end }}
+                                        </button>
+                                    </form>
+                                    <!-- <form action="/delete_note_item" method="post" class="float-right d-inline">
+                                        <input type="hidden" name="note_id" value="{{$note.Id}}">
+                                        <button type="submit" class="btn">
+                                            <i class="far fa-trash-alt fa-lg text-danger float-right"></i>
+                                        </button>
+                                    </form> -->
+                                    </h6>
+                                    <!-- <p class="mb-1" style="white-space: pre-line">{{$note.Content}}</p> -->
+                                    
+                                {{ end }}
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -83,5 +91,7 @@
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script></body>
+        crossorigin="anonymous"></script>
+
+    </body>
 </html>

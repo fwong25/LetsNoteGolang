@@ -35,7 +35,7 @@
                         </button>
                     </form>
                     <div class="input-group mb-2">
-                        <form action="/add_new_note" method="post" autocomplete="false">
+                        <form action="/add_new_note?Parent_tbl_id=none&Parent_note_id=none" method="post" autocomplete="false">
                             <div class="input-group-append text-info">
                                 <span class="input-group-text bg-dark py-0">
                                     <button type="submit" class="btn btn-sm text-info">
@@ -46,14 +46,21 @@
                         </form>
                     </div>
                     <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                        {{ range $note := . }}
+                        {{ range $note := $.Note_list }}
                         <li class="nav-item">
-                            <form action="/view_note" method="post" class="d-inline">
+                            <!-- todo: set Parent_tbl_id and Parent_note_id to correct value -->
+                            <form action="/view_note?tbl_id={{$note.Parent_table_id}}_{{$note.Parent_note_id}}" method="post" class="d-inline">
                                 <!-- {% csrf_token %} -->
                                 <input type="hidden" name="note_id" value="{{$note.Id}}">
-                                <button type="submit" class="astext">
-                                    <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline text-white">{{$note.Title}}</span>
-                                </button>
+                                <nobr>
+                                    {{ range $val := Iterate $note.Note_level }}
+                                    <i>-</i>
+                                    {{end}}
+                                    <button type="submit" class="astext">
+                                        <!-- <h5>{{$note.Title}}</h5> -->
+                                        <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline text-white">{{$note.Title}}</span>
+                                    </button>
+                                </nobr>
                             </form>
                         </li>
                         {{ end }}
@@ -70,29 +77,32 @@
                                     <!-- <h1 class="display-5 text-info"  style="color: #FFCC33 !important;"><i class="fas fa-check-double"></i> LetsNote</h1> -->
                                 </div>
                                 <div class="card-body">
-                                    <form action="/insert_note_item_action" method="post" autocomplete="false">
+                                    <small class="text-muted">Created on {{$.Selected_note.Created_date}}, </small>
+                                    <small class="text-muted">last modified on {{$.Selected_note.Last_modified_date}}</small>
+                                    <h5 class="mb-1">{{$.Selected_note.Title}}
+                                        <form action="/delete_note_item?tbl_id={{$.Selected_note.Parent_table_id}}_{{$.Selected_note.Parent_note_id}}" method="post" class="float-right d-inline">
                                         <!-- {% csrf_token %} -->
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="title" placeholder="Title">
-                                            <div class="input-group-append text-info">
-                                                <span class="input-group-text bg-white py-0">
-                                                    <button type="submit" class="btn btn-sm text-info" name="action" value="Insert">
-                                                        <i class="fa fa-plus-circle fa-lg"></i>
-                                                    </button>
-                                                </span>
-                                            </div>
-                                            <div class="input-group-append text-info">
-                                                <span class="input-group-text bg-white py-0">
-                                                    <button type="submit" class="btn btn-sm text-info"  name="action" value="Cancel">
-                                                        <h6 style="color:rgb(197, 5, 5) !important;"><b>X</b></h6>
-                                                    </button>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="input-group">
-                                            <textarea class="form-control" name="content" placeholder="Content" rows="14"></textarea>
-                                            </div>
+                                        <input type="hidden" name="note_id" value="{{$.Note_id}}">
+                                        <button type="submit" class="btn">
+                                            <i class="far fa-trash-alt fa-lg text-danger float-right"></i>
+                                        </button>
                                     </form>
+                                    <form action="/modify_note_item?tbl_id={{$.Selected_note.Parent_table_id}}_{{$.Selected_note.Parent_note_id}}" method="post" class="float-right d-inline">
+                                        <!-- {% csrf_token %} -->
+                                        <input type="hidden" name="note_id" value="{{$.Note_id}}">
+                                        <button type="submit" class="btn">
+                                            <i class="fa fa-pencil-alt fa-lg text-danger float-right"></i>
+                                        </button>
+                                    </form>
+                                    <form action="/add_new_note?Parent_tbl_id={{$.Selected_note.Parent_table_id}}_{{$.Selected_note.Parent_note_id}}&Parent_note_id={{$.Selected_note.Id}}" method="post" class="float-right d-inline">
+                                        <!-- {% csrf_token %} -->
+                                        <input type="hidden" name="note_id" value="{{$.Note_id}}">
+                                        <button type="submit" class="btn">
+                                            <i class="fa fa-plus fa-lg text-danger float-right"></i>
+                                        </button>
+                                    </form>
+                                    </h5>
+                                    <p class="mb-1" style="white-space: pre-line">{{$.Selected_note.Content}}</p>
                                 </div>
                             </div>
                         </div>

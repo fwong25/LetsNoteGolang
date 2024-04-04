@@ -35,7 +35,7 @@
                         </button>
                     </form>
                     <div class="input-group mb-2">
-                        <form action="/add_new_note" method="post" autocomplete="false">
+                        <form action="/add_new_note?Parent_tbl_id=none&Parent_note_id=none" method="post" autocomplete="false">
                             <div class="input-group-append text-info">
                                 <span class="input-group-text bg-dark py-0">
                                     <button type="submit" class="btn btn-sm text-info">
@@ -46,15 +46,20 @@
                         </form>
                     </div>
                     <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                        {{ range $note := $.Note_list }}
+                        {{ range $note := .Note_list }}
                         <li class="nav-item">
-                            <form action="/view_note" method="post" class="d-inline">
+                            <form action="/view_note?tbl_id={{$note.Parent_table_id}}_{{$note.Parent_note_id}}" method="post" class="d-inline">
                                 <!-- {% csrf_token %} -->
                                 <input type="hidden" name="note_id" value="{{$note.Id}}">
-                                <button type="submit" class="astext">
-                                    <!-- <h5>{{$note.Title}}</h5> -->
-                                    <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline text-white">{{$note.Title}}</span>
-                                </button>
+                                <nobr>
+                                    {{ range $val := Iterate $note.Note_level }}
+                                    <i>-</i>
+                                    {{end}}
+                                    <button type="submit" class="astext">
+                                        <!-- <h5>{{$note.Title}}</h5> -->
+                                        <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline text-white">{{$note.Title}}</span>
+                                    </button>
+                                </nobr>
                             </form>
                         </li>
                         {{ end }}
@@ -71,15 +76,14 @@
                                     <!-- <h1 class="display-5 text-info"  style="color: #FFCC33 !important;"><i class="fas fa-check-double"></i> LetsNote</h1> -->
                                 </div>
                                 <div class="card-body">
-                                    <form action="/modify_note_item_action" method="post" autocomplete="false">
-                                        <input type="hidden" name="note_id" value="{{$.Note_id}}">
+                                    <form action="/insert_note_item_action?Parent_tbl_id={{$.Parent_tbl_id}}&Parent_note_id={{$.Parent_note_id}}" method="post" autocomplete="false">
                                         <!-- {% csrf_token %} -->
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="title" placeholder="Title" value="{{ $.Note_to_edit.Title }}">
+                                            <input type="text" class="form-control" name="title" placeholder="Title">
                                             <div class="input-group-append text-info">
                                                 <span class="input-group-text bg-white py-0">
-                                                    <button type="submit" class="btn btn-sm text-info" name="action" value="Update">
-                                                        <i class="fa fa-check fa-lg"></i>
+                                                    <button type="submit" class="btn btn-sm text-info" name="action" value="Insert">
+                                                        <i class="fa fa-plus-circle fa-lg"></i>
                                                     </button>
                                                 </span>
                                             </div>
@@ -92,7 +96,7 @@
                                             </div>
                                         </div>
                                         <div class="input-group">
-                                            <textarea class="form-control" name="content" placeholder="Content" rows="12">{{ $.Note_to_edit.Content }}</textarea>
+                                            <textarea class="form-control" name="content" placeholder="Content" rows="14"></textarea>
                                             </div>
                                     </form>
                                 </div>

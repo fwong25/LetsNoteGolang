@@ -12,6 +12,3 @@ replace db_mgmt v1.0.0 => ./src/db_mgmt
 
 require interfaces v1.0.0
 replace interfaces v1.0.0 => ./src/interfaces
-
-require interfaces_v2 v1.0.0
-replace interfaces_v2 v1.0.0 => ./src/interfaces_v2
