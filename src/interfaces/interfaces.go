@@ -69,7 +69,6 @@ func addNewNote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	add_note_info := map[string]interface{}{"Parent_tbl_id": parent_tbl_id, "Parent_note_id": parent_note_id, "Note_list": note_list}
-	fmt.Println(add_note_info)
 	err = t.ExecuteTemplate(w, fileName, add_note_info)
 	if err != nil {
 		fmt.Println("Error when executing template", err)
@@ -102,7 +101,7 @@ func viewNote(w http.ResponseWriter, r *http.Request) {
 	if tbl_id == "none_none" {
 		tbl_id = db_mgmt.Main_tbl_id
 	}
-	fmt.Println("Table ID: ", tbl_id)
+	fmt.Println("View note with table ID: " + tbl_id + ", note ID: " + note_id)
 	selected_note := db_mgmt.GetNote(tbl_id, note_id)
 
 	var fileName = "note_view.html"
@@ -147,10 +146,10 @@ func insertNote(w http.ResponseWriter, r *http.Request) {
 	parent_note_id := r.FormValue("Parent_note_id")
 
 	note_id, table_id := db_mgmt.InsertNote(parent_tbl_id, parent_note_id, title, content)
-	fmt.Println("New record ID is: ", note_id)
-	fmt.Println("Table ID: ", table_id)
+	fmt.Print("New record note ID is:", note_id)
+	fmt.Println(", Table ID: ", table_id)
 
-	http.Redirect(w, r,  "/view_note?tbl_id=" + table_id + "&note_id=" + strconv.Itoa(note_id), http.StatusSeeOther)
+	http.Redirect(w, r, "/view_note?tbl_id=" + table_id + "&note_id=" + strconv.Itoa(note_id), http.StatusSeeOther)
 }
 
 func deleteNote(w http.ResponseWriter, r *http.Request) {
@@ -204,8 +203,8 @@ func modifyNote(w http.ResponseWriter, r *http.Request) {
 func modifyNoteConfirm(w http.ResponseWriter, r *http.Request) {
 	note_id := r.FormValue("note_id")
 	tbl_id := r.FormValue("tbl_id")
-	fmt.Println("Confirm modification on note with ID: ", note_id)
-	fmt.Println("Table ID: ", tbl_id)
+	fmt.Print("Confirm modification on note with ID:", note_id)
+	fmt.Println(", Table ID:", tbl_id)
 	title := r.FormValue("title")
 	content := r.FormValue("content")
 

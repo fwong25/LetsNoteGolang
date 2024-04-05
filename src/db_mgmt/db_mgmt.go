@@ -19,7 +19,6 @@ const (
 )
 
 var Main_tbl_id string = "note_table_0"
-// var note_tbl_header string = "note_table_"
 
 var db *sql.DB
 var err error
@@ -48,7 +47,6 @@ func CloseDB() {
 
 func CreateSubnoteTable(parent_note models.Note) {
 	cur_note_level := strconv.Itoa(parent_note.Note_level + 1)
-	// table_name := note_tbl_header + strconv.Itoa(parent_note.Id)
 	var parent_tbl_id string
 	if parent_note.Parent_table_id == "none" {
 		parent_tbl_id = Main_tbl_id
@@ -79,7 +77,6 @@ func CreateSubnoteTable(parent_note models.Note) {
 }
 
 func checkTableExist(parent_tbl_id string, parent_note_id string) (table_name string) {
-	fmt.Println("parent_tbl_id: " + parent_tbl_id)
 	if parent_tbl_id == "none" {
 		return Main_tbl_id
 	}
@@ -93,7 +90,6 @@ func checkTableExist(parent_tbl_id string, parent_note_id string) (table_name st
 }
 
 func setSubnoteExist(tbl_id string, note_id string, val bool) (affected_rows int64){
-	// table_name := note_tbl_header + tbl_id
 	sqlStatement := `
 		UPDATE ` + tbl_id + `
 		SET subnote_exist = $1
@@ -108,13 +104,11 @@ func setSubnoteExist(tbl_id string, note_id string, val bool) (affected_rows int
 }
 
 func GetNoteListAllSubtable(table_id string) []models.Note {
-	// table_name := note_tbl_header + table_id
 	place := models.Note{} // Initialize a User struct to hold retrieved data
 
 	// Execute a SQL query to select "username" and "email" columns from the "users" table
 	rows, _ := db.Query("SELECT id, title, content, created_date, last_modified_date, subnote_exist, note_level, parent_table_id, parent_note_id FROM " + table_id + " ORDER BY last_modified_date")
 	note_list := []models.Note{}
-	fmt.Println("table_id = " + table_id)
 
 	for rows.Next() {
 		err := rows.Scan(&place.Id, &place.Title, &place.Content, &place.Created_date, &place.Last_modified_date, &place.Subnote_exist, &place.Note_level, &place.Parent_table_id, &place.Parent_note_id) // Scan the current row into the "place" variable
@@ -162,8 +156,7 @@ func GetNoteListSingleTable(table_name string) []models.Note {
 }
 
 func GetNote(table_id string, note_id string) models.Note {
-	note := models.Note{} // Initialize a User struct to hold retrieved data
-	// table_name := note_tbl_header + table_id
+	note := models.Note{} // Initialize struct to hold retrieved data
 
 	queryStat := "SELECT id, title, content, created_date, last_modified_date, subnote_exist, note_level, parent_table_id, parent_note_id FROM " + table_id + " WHERE id = " + note_id
 
@@ -193,7 +186,6 @@ func InsertNote(parent_tbl_id string, parent_note_id string, title string, conte
 	table_name := checkTableExist(parent_tbl_id, parent_note_id)
 	fmt.Println("table_name: "+table_name)
 
-	// table_name := note_tbl_header + parent_note_id
 	sqlStatement := `
 		INSERT INTO ` + table_name + ` (title, content, created_date, last_modified_date)
 		VALUES ($1, $2, $3, $4)
@@ -209,8 +201,6 @@ func InsertNote(parent_tbl_id string, parent_note_id string, title string, conte
 }
 
 func DeleteNote(table_id string, note_id string) (affected_rows int64) {
-	// table_name := note_tbl_header + table_id
-
 	note := GetNote(table_id, note_id)
 	fmt.Println("Delete note with ID: ", note_id)
 
@@ -240,8 +230,6 @@ func DeleteNote(table_id string, note_id string) (affected_rows int64) {
 }
 
 func DeleteSubNoteTable(table_id string){
-	// table_name := note_tbl_header + table_id
-
 	fmt.Println("Delete subnote table: ", table_id)
 
 	note_list := GetNoteListSingleTable(table_id)
@@ -264,7 +252,6 @@ func DeleteSubNoteTable(table_id string){
 }
 
 func checkIfNeedDeleteTable(table_id string) (table_deleted bool) {
-	// table_name := note_tbl_header + table_id
 	table_deleted = false
 
 	if table_id == Main_tbl_id {
@@ -286,8 +273,6 @@ func checkIfNeedDeleteTable(table_id string) (table_deleted bool) {
 		fmt.Println("Error when scanning rows in checkIfNeedDeleteTable", err)
 	}
 
-	fmt.Println("rows_cnt in checkIfNeedDeleteTable: " + strconv.Itoa(rows_cnt));
-
 	if rows_cnt == 0 {
 		sqlStatement := `
 		DROP TABLE ` + table_id + `;`
@@ -303,9 +288,7 @@ func checkIfNeedDeleteTable(table_id string) (table_deleted bool) {
 }
 
 func UpdateNote(table_id string, note_id string, title string, content string) (affected_rows int64) {
-	// table_name := note_tbl_header + table_id
-
-	fmt.Println("Update note with ID: ", note_id)
+	fmt.Println("Update note with table ID: " + table_id + ", note ID: " + note_id)
 
 	currentTime := time.Now()
 	last_modified_date := currentTime.Format("2006-01-02")
