@@ -9,7 +9,7 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- <link rel="stylesheet" href="{% static 'todos/styles.css' %}"> -->
-    <!-- <link rel="stylesheet" href="static/stylesheet.css"> -->
+    <!-- <link rel="stylesheet" href="static/stylesheet.css" type="text/css"> -->
 
     <style>
         .astext {
@@ -19,6 +19,9 @@
         padding:0;
         cursor: pointer;
     }
+        /* input {border:0!important;outline:0!important;background:none!important;} */
+        input {background:none!important;}
+        input:focus {outline:none!important;}
     </style>
 </head>
 <body class="bg-light">
@@ -79,11 +82,12 @@
                                     <form action="/modify_note_item_action?tbl_id={{$.Note_to_edit.Parent_table_id}}_{{$.Note_to_edit.Parent_note_id}}" method="post" autocomplete="false">
                                         <input type="hidden" name="note_id" value="{{$.Note_id}}">
                                         <!-- {% csrf_token %} -->
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="title" placeholder="Title" value="{{ $.Note_to_edit.Title }}">
+                                        <div class="input-group mb-2">
+                                            <input type="hidden" id="title_input" class="form-control" name="title" placeholder="Title" value="{{ $.Note_to_edit.Title }}">
+                                            <input type="text" class="form-control" placeholder="Edit mode" readonly>
                                             <div class="input-group-append text-info">
                                                 <span class="input-group-text bg-white py-0">
-                                                    <button type="submit" class="btn btn-sm text-info" name="action" value="Update">
+                                                    <button type="submit" class="btn btn-sm text-info" name="action" value="Update" id="confirmUpdateBtn">
                                                         <i class="fa fa-check fa-lg"></i>
                                                     </button>
                                                 </span>
@@ -97,8 +101,11 @@
                                             </div>
                                         </div>
                                         <div class="input-group">
-                                            <textarea class="form-control" name="content" placeholder="Content" rows="12">{{ $.Note_to_edit.Content }}</textarea>
-                                            </div>
+                                            <textarea style="display:none;" class="form-control" id="content_input" name="content" placeholder="Content" rows="12">{{ $.Note_to_edit.Content }}</textarea>
+                                        </div>
+                                        <h5 class="mb-1" id="title_p" contenteditable="true">{{ $.Note_to_edit.Title }}</h5>
+                                        <p class="mb-1" id="content_p" style="white-space: pre-line" contenteditable="true">{{ $.Note_to_edit.Content }}</p>
+                                        
                                     </form>
                                 </div>
                             </div>
@@ -117,6 +124,22 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+    <!-- <script src="templates/scripts/script.js"></script> -->
+    <script type="text/javascript">
+        const confirmBtn = document.getElementById("confirmUpdateBtn");
+        confirmBtn.onclick = assignTitleAndContent;
 
+        function assignTitleAndContent() {
+            const title_p = document.getElementById("title_p");
+            const content_p = document.getElementById("content_p");
+            const title_input = document.getElementById("title_input");
+            const content_input = document.getElementById("content_input");
+
+            title_input.value =  title_p.innerHTML;
+            content_input.value =  content_p.innerHTML;
+            console.log(title_p.innerHTML);
+            console.log(title_input.value);
+        }
+    </script>
     </body>
 </html>

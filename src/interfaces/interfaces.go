@@ -45,9 +45,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	case ("/modify_note_item_action"):
 		modifyNoteAction(w, r)
 	default:
-		// fmt.Fprintf(w, "Visit /list_note")
-		fmt.Println("Redirect ", r.URL.Path, " to /list_note")
-		http.Redirect(w, r, "/list_note", http.StatusSeeOther)
+		fmt.Fprintf(w, "Visit /list_note")
+		// fmt.Println("Redirect ", r.URL.Path, " to /list_note")
+		// http.Redirect(w, r, "/list_note", http.StatusSeeOther)
 	}
 }
 
