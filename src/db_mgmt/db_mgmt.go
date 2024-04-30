@@ -12,7 +12,7 @@ import (
 
 const (
 	host     = "localhost"
-	port     = 5432
+	port     = 5433
 	user     = "postgres"
 	password = "12345678"
 	dbname   = "LetsNoteDB"
