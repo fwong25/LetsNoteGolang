@@ -123,16 +123,14 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
     <script type="text/javascript">
-        assignTitleAndContent();
+        assignTitleAndContentAsInnerHtml();
 
-        function assignTitleAndContent() {
+        function assignTitleAndContentAsInnerHtml() {
             const title_p = document.getElementById("title_p");
             const content_p = document.getElementById("content_p");
             const title_input = document.getElementById("title_input");
             const content_input = document.getElementById("content_input");
 
-            // title_p.innerHTML = title_input.value;
-            // content_p.innerHTML = content_input.value;
             title_p.innerHTML = title_p.innerHTML.replace(/title_to_replace/g, '{{$.Selected_note.Title}}');
             content_p.innerHTML = content_p.innerHTML.replace(/content_to_replace/g, '{{$.Selected_note.Content}}');
         }

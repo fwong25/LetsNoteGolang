@@ -103,8 +103,8 @@
                                         <div class="input-group">
                                             <textarea style="display:none;" class="form-control" id="content_input" name="content" placeholder="Content" rows="12">{{ $.Note_to_edit.Content }}</textarea>
                                         </div>
-                                        <h5 class="mb-1" id="title_p" contenteditable="true">{{ $.Note_to_edit.Title }}</h5>
-                                        <p class="mb-1" id="content_p" style="white-space: pre-line" contenteditable="true">{{ $.Note_to_edit.Content }}</p>
+                                        <h5 class="mb-1" id="title_p" contenteditable="true">title_to_replace</h5>
+                                        <p class="mb-1" id="content_p" style="white-space: pre-line" contenteditable="true">content_to_replace</p>
                                         
                                     </form>
                                 </div>
@@ -127,9 +127,9 @@
     <!-- <script src="templates/scripts/script.js"></script> -->
     <script type="text/javascript">
         const confirmBtn = document.getElementById("confirmUpdateBtn");
-        confirmBtn.onclick = assignTitleAndContent;
+        confirmBtn.onclick = assignTitleAndContentHtmlAsInput;
 
-        function assignTitleAndContent() {
+        function assignTitleAndContentHtmlAsInput() {
             const title_p = document.getElementById("title_p");
             const content_p = document.getElementById("content_p");
             const title_input = document.getElementById("title_input");
@@ -139,6 +139,18 @@
             content_input.value =  content_p.innerHTML;
             console.log(title_p.innerHTML);
             console.log(title_input.value);
+        }
+
+        assignTitleAndContentAsInnerHtml();
+
+        function assignTitleAndContentAsInnerHtml() {
+            const title_p = document.getElementById("title_p");
+            const content_p = document.getElementById("content_p");
+            const title_input = document.getElementById("title_input");
+            const content_input = document.getElementById("content_input");
+
+            title_p.innerHTML = title_p.innerHTML.replace(/title_to_replace/g, '{{ $.Note_to_edit.Title }}');
+            content_p.innerHTML = content_p.innerHTML.replace(/content_to_replace/g, '{{ $.Note_to_edit.Content }}');
         }
     </script>
     </body>
